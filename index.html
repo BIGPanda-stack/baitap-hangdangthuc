@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mảnh Ghép Hoàn Hảo - Toán 8</title>
   
   <!-- KaTeX CSS & JS -->
@@ -21,49 +21,45 @@
       --accent-blue: #eff6ff;
     }
 
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-color); margin: 0; padding: 20px; color: #1f2937; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: var(--bg-color); margin: 0; padding: 12px; color: #1f2937; }
 
     .header-title {
       text-align: center;
       color: #dc2626;
-      font-size: 32px;
-      font-weight: 900;
-      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: 800;
+      margin: 10px 0 15px 0;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
     }
 
     .main-grid {
-      max-width: 1050px;
+      max-width: 900px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 15px;
     }
 
     .card {
       background: var(--card-bg);
       border-radius: 16px;
-      padding: 24px;
+      padding: 16px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.05);
       border: 1px solid var(--border-color);
     }
 
     .card-title {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: bold;
       color: #374151;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+      line-height: 1.4;
     }
 
     .user-info {
       background: var(--accent-blue);
-      padding: 12px 16px;
+      padding: 10px 14px;
       border-radius: 10px;
       display: flex;
       gap: 10px;
@@ -76,53 +72,67 @@
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       outline: none;
-      font-size: 15px;
+      font-size: 14px;
     }
 
-    /* Khung nối matching */
+    /* Container ghép nối */
     .matching-container {
       position: relative;
       display: flex;
       justify-content: space-between;
-      margin: 20px 0;
-      padding: 10px 0;
+      margin: 15px 0;
+      padding: 5px 0;
     }
 
     .column {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      width: 42%;
+      gap: 10px;
       z-index: 2;
     }
 
+    /* Cột trái chiếm 36%, Cột phải chiếm 58% để ưu tiên không gian cho công thức dài */
+    .column-left { width: 36%; }
+    .column-right { width: 58%; }
+
     .match-item {
-      background: linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 100%);
+      background: linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%);
       border: 2px solid #c084fc;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-size: 18px;
+      border-radius: 8px;
+      padding: 8px 4px;
       text-align: center;
       cursor: pointer;
       user-select: none;
       transition: all 0.2s;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      min-height: 52px;
+      min-height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow-x: auto; /* Cho phép cuộn nhẹ nếu màn hình quá hẹp */
+      white-space: nowrap;
     }
 
-    .match-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      border-color: #a855f7;
+    /* Chỉnh cỡ chữ KaTeX để không bao giờ bị rớt dòng */
+    .match-item .katex {
+      font-size: 0.95em !important;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 8px; }
+      .card { padding: 12px; }
+      .match-item { 
+        padding: 6px 2px; 
+        min-height: 44px;
+        border-width: 1.5px;
+      }
+      .match-item .katex {
+        font-size: 0.78em !important; /* Thu nhỏ công thức trên điện thoại */
+      }
     }
 
     .match-item.selected {
-      border: 3px solid #eab308 !important;
+      border: 2.5px solid #eab308 !important;
       background: #fef08a !important;
-      font-weight: bold;
     }
 
     .match-item.matched {
@@ -140,7 +150,7 @@
       background: #fee2e2 !important;
     }
 
-    /* SVG Layer cho dây nối */
+    /* Layer vẽ SVG */
     #svgLines {
       position: absolute;
       top: 0;
@@ -156,13 +166,12 @@
       color: white;
       border: none;
       width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      font-size: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 15px;
-      transition: 0.2s;
+      margin-top: 10px;
     }
 
     .btn-submit:hover { background: #16a34a; }
@@ -172,11 +181,12 @@
       width: 100%;
       border-collapse: collapse;
       background: white;
-      border-radius: 10px;
+      border-radius: 8px;
       overflow: hidden;
+      font-size: 14px;
     }
 
-    th, td { border: 1px solid var(--border-color); padding: 12px; text-align: center; }
+    th, td { border: 1px solid var(--border-color); padding: 8px; text-align: center; }
     th { background: #e0e7ff; color: #3730a3; }
   </style>
 </head>
@@ -188,20 +198,20 @@
   <!-- THÔNG TIN NHÓM -->
   <div class="card">
     <div class="user-info">
-      <label for="studentName"><b>Tên Nhóm / Học Sinh:</b></label>
-      <input type="text" id="studentName" placeholder="Nhập tên Nhóm (Ví dụ: Nhóm 1)...">
+      <label for="studentName"><b>Tên:</b></label>
+      <input type="text" id="studentName" placeholder="Nhập tên Nhóm / Học sinh...">
     </div>
   </div>
 
-  <!-- KHU VỰC NỐI BÀI TẬP -->
+  <!-- NỐI BÀI TẬP -->
   <div class="card">
-    <div class="card-title">💡 Chọn 1 ô vế trái và 1 ô vế phải tương ứng để nối lại với nhau:</div>
+    <div class="card-title">💡 Bấm 1 ô vế trái và 1 ô vế phải tương ứng để nối:</div>
 
     <div class="matching-container" id="matchArea">
       <svg id="svgLines"></svg>
 
       <!-- VẾ TRÁI -->
-      <div class="column" id="leftCol">
+      <div class="column column-left" id="leftCol">
         <div class="match-item" data-id="1" data-ans="A"><span class="math">(x+y)^3</span></div>
         <div class="match-item" data-id="2" data-ans="B"><span class="math">x^2 - y^2</span></div>
         <div class="match-item" data-id="3" data-ans="C"><span class="math">x^3 - y^3</span></div>
@@ -212,7 +222,7 @@
       </div>
 
       <!-- VẾ PHẢI -->
-      <div class="column" id="rightCol">
+      <div class="column column-right" id="rightCol">
         <div class="match-item" data-key="A"><span class="math">= x^3 + 3x^2y + 3xy^2 + y^3</span></div>
         <div class="match-item" data-key="F"><span class="math">= x^3 - 3x^2y + 3xy^2 - y^3</span></div>
         <div class="match-item" data-key="B"><span class="math">= (x-y)(x+y)</span></div>
@@ -223,53 +233,54 @@
       </div>
     </div>
 
-    <button class="btn-submit" id="submitBtn" onclick="checkAnswer()">CHECK / KIỂM TRA ĐÁP ÁN</button>
-    <div id="resultBox" style="margin-top:15px; padding:10px; border-radius:8px; text-align:center; display:none;"></div>
+    <button class="btn-submit" id="submitBtn" onclick="checkAnswer()">CHECK / KIỂM TRA</button>
+    <div id="resultBox" style="margin-top:12px; padding:10px; border-radius:8px; text-align:center; display:none; font-weight:bold;"></div>
   </div>
 
   <!-- BẢNG XẾP HẠNG -->
   <div class="card">
-    <div class="card-title">🏆 BẢNG XẾP HẠNG HỌC SINH / NHÓM</div>
+    <div class="card-title">🏆 BẢNG XẾP HẠNG</div>
     <table>
       <thead>
         <tr>
           <th>Hạng</th>
-          <th>Tên Nhóm / Học Sinh</th>
-          <th>Điểm Số</th>
-          <th>Thời Gian Nộp</th>
+          <th>Tên</th>
+          <th>Điểm</th>
+          <th>Thời gian</th>
         </tr>
       </thead>
       <tbody id="boardBody">
-        <tr><td colspan="4">Đang tải dữ liệu...</td></tr>
+        <tr><td colspan="4">Đang tải...</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
 <script>
-  // Supabase Configuration
   const SUPABASE_URL = "https://hyllhascudmrpfelnukc.supabase.co";
   const SUPABASE_KEY = "sb_publishable_oOicirSiyYu1f2oCYyYrzA_qcPCL7nX";
   const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let selectedLeft = null;
-  let matches = {}; // Structure: { leftId: rightKey }
+  let matches = {};
 
   window.onload = function() {
     renderMath();
     initEvents();
     loadLeaderboard();
     window.addEventListener('resize', redrawLines);
+    window.addEventListener('orientationchange', redrawLines);
   };
 
   function renderMath() {
     document.querySelectorAll('.math').forEach(el => {
       katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
     });
+    // Tự động vẽ lại nét nối sau khi KaTeX render xong
+    setTimeout(redrawLines, 100);
   }
 
   function initEvents() {
-    // Left side click
     document.querySelectorAll('#leftCol .match-item').forEach(item => {
       item.addEventListener('click', function() {
         document.querySelectorAll('#leftCol .match-item').forEach(i => i.classList.remove('selected'));
@@ -278,7 +289,6 @@
       });
     });
 
-    // Right side click
     document.querySelectorAll('#rightCol .match-item').forEach(item => {
       item.addEventListener('click', function() {
         if (!selectedLeft) return;
@@ -286,7 +296,6 @@
         let leftId = selectedLeft.getAttribute('data-id');
         let rightKey = this.getAttribute('data-key');
 
-        // Remove old matches pointing to this right item
         for (let lId in matches) {
           if (matches[lId] === rightKey) delete matches[lId];
         }
@@ -319,9 +328,9 @@
         let rightRect = rightEl.getBoundingClientRect();
 
         let x1 = leftRect.right - containerRect.left;
-        let y1 = leftRect.top + leftRect.height / 2 - containerRect.top;
+        let y1 = leftRect.top + (leftRect.height / 2) - containerRect.top;
         let x2 = rightRect.left - containerRect.left;
-        let y2 = rightRect.top + rightRect.height / 2 - containerRect.top;
+        let y2 = rightRect.top + (rightRect.height / 2) - containerRect.top;
 
         let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', x1);
@@ -329,8 +338,8 @@
         line.setAttribute('x2', x2);
         line.setAttribute('y2', y2);
         line.setAttribute('stroke', '#8b5cf6');
-        line.setAttribute('stroke-width', '3');
-        line.setAttribute('stroke-dasharray', '5,5');
+        line.setAttribute('stroke-width', '2.5');
+        line.setAttribute('stroke-dasharray', '4,4');
         line.id = `line-${leftId}`;
 
         svg.appendChild(line);
@@ -341,7 +350,7 @@
   async function checkAnswer() {
     let name = document.getElementById('studentName').value.trim();
     if (!name) {
-      alert("Vui lòng nhập Tên Nhóm trước khi nộp bài!");
+      alert("Vui lòng nhập Tên trước khi nộp bài!");
       return;
     }
 
@@ -361,12 +370,14 @@
         if (line) {
           line.setAttribute('stroke', '#22c55e');
           line.removeAttribute('stroke-dasharray');
+          line.setAttribute('stroke-width', '3');
         }
       } else {
         item.classList.add('wrong');
         if (line) {
           line.setAttribute('stroke', '#ef4444');
           line.removeAttribute('stroke-dasharray');
+          line.setAttribute('stroke-width', '3');
         }
       }
     });
@@ -381,7 +392,7 @@
     resBox.style.display = "block";
     resBox.style.background = correctCount === leftItems.length ? "#dcfce7" : "#fee2e2";
     resBox.style.color = correctCount === leftItems.length ? "#166534" : "#991b1b";
-    resBox.innerHTML = `🎉 Nhóm <b>${name}</b> hoàn thành: <b>${correctCount}/${leftItems.length}</b> câu đúng!`;
+    resBox.innerHTML = `🎉 <b>${name}</b> đúng: <b>${correctCount}/${leftItems.length}</b> câu!`;
 
     document.getElementById('submitBtn').disabled = true;
     document.getElementById('submitBtn').innerText = "ĐANG LƯU KẾT QUẢ...";
@@ -405,7 +416,7 @@
     tbody.innerHTML = '';
 
     if (error || !data || data.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4">Chưa có nhóm nào nộp bài.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4">Chưa có ai nộp bài.</td></tr>';
       return;
     }
 
